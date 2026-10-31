@@ -577,15 +577,17 @@ def layout_checks(rows, image):
 def detect_largest_face(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    cascade_path = (
+    cascade_file = (
         cv2.data.haarcascades
         + "haarcascade_frontalface_default.xml"
     )
 
-    cascade = cv2.CascadeClassifier(cascade_path)
+    cascade = cv2.CascadeClassifier(cascade_file)
 
     if cascade.empty():
-        raise RuntimeError("Could not load Haar Cascade classifier.")
+        raise RuntimeError(
+            f"Could not load Haar Cascade classifier: {cascade_file}"
+        )
 
     faces = cascade.detectMultiScale(
         gray,
@@ -599,22 +601,12 @@ def detect_largest_face(image):
 
     x, y, w, h = max(faces, key=lambda f: f[2] * f[3])
 
-    # Expand the face crop by 50%, keeping it inside the image.
-    new_w = int(w * 1.5)
-    new_h = int(h * 1.5)
+    x1 = max(0, x - w // 4)
+    y1 = max(0, y - h // 4)
+    x2 = min(image.shape[1], x + w + w // 4)
+    y2 = min(image.shape[0], y + h + h // 4)
 
-    center_x = x + w // 2
-    center_y = y + h // 2
-
-    x1 = max(0, center_x - new_w // 2)
-    y1 = max(0, center_y - new_h // 2)
-    x2 = min(image.shape[1], x1 + new_w)
-    y2 = min(image.shape[0], y1 + new_h)
-
-    crop = image[y1:y2, x1:x2].copy()
-
-    return crop, (x, y, w, h)
-
+    return image[y1:y2, x1:x2].copy(), (x, y, w, h)
 
 # =========================================================
 # SIDEBAR
