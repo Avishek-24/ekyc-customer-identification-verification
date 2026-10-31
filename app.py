@@ -246,7 +246,7 @@ def draw_ocr_overlay(image, rows, threshold=0.55):
 
 # =========================================================
 # DOCUMENT FIELD EXTRACTION
-# Based on the notebook's student_id and generic_id profiles
+
 # =========================================================
 
 DOCUMENT_CONFIGS = {
@@ -989,7 +989,7 @@ if st.button("Detect face in document image"):
 
 # =========================================================
 # OPTIONAL DEEPFACE VERIFICATION
-# Does not use the face_recognition / dlib Python package.
+
 # =========================================================
 
 st.divider()
